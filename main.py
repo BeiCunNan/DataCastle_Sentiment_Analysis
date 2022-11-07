@@ -120,6 +120,7 @@ class Niubility:
         optimizer = torch.optim.AdamW(_params, lr=self.args.lr, weight_decay=self.args.weight_decay)
 
         # Get the best_loss, the best_score and save the model
+        submit = []
         best_loss, best_score = 0, 0
         for epoch in range(self.args.num_epoch):
             train_loss, train_score = self._train(train_dataloader, criterion, optimizer)
@@ -127,7 +128,6 @@ class Niubility:
             if test_score > best_score or (test_score == best_score and test_loss > best_loss):
                 best_score, best_loss = test_score, test_loss
                 submit = self._submit(submit_dataloader)
-                print(submit[:100])
             self.logger.info(
                 '{}/{} - {:.2f}%'.format(epoch + 1, self.args.num_epoch, 100 * (epoch + 1) / self.args.num_epoch))
             self.logger.info('[train] loss: {:.4f}, f1_score: {:.2f}'.format(train_loss, train_score * 100))
@@ -136,7 +136,13 @@ class Niubility:
         self.logger.info('log saved: {}'.format(self.args.log_name))
 
         # Get the final submit text
-        self._submit(submit_dataloader)
+        with open('result.csv', "w") as f:
+            f.write('ID,Label\n')
+            index = 25000
+            for line in submit:
+                f.write(str(index) + ',' + str(line) + '\n')
+                index += 1
+        print("----------Congratulations!----------")
 
 
 if __name__ == '__main__':

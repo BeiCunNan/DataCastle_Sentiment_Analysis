@@ -3,7 +3,7 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="C:\Users\大白菜\Desktop\submit_example.csv">
+        <entry key="\data\submit_example.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -11,6 +11,13 @@
           </value>
         </entry>
         <entry key="\data\treat_submit.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\result.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
