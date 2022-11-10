@@ -48,10 +48,11 @@ def load_dataset(tokenizer, train_batch_size, test_batch_size, model_name, metho
     data_submit = pd.read_csv('./data/treat_submit.csv', sep=None, header=0, encoding='utf-8', engine='python')
 
     len1 = int(len(list(data['labels'])) * 0.1)
+    len1=10
     labels = list(data['labels'])[0:len1]
     sentences = list(data['sentences'])[0:len1]
-    sub_sen = list(data_submit['sentences'])[0:len1]
-    sub_lab = list(data_submit['labels'])[0:len1]
+    sub_sen = list(data_submit['sentences'])
+    sub_lab = list(data_submit['labels'])
 
     # split train_set and test_set
     tr_sen, te_sen, tr_lab, te_lab = train_test_split(sentences, labels, train_size=0.8)

@@ -106,6 +106,7 @@ class Niubility:
                 predicts = self.Mymodel(inputs)
                 predicts = torch.argmax(predicts, dim=1)
                 submit += predicts.cpu().tolist()
+        print(len(submit))
         return submit
 
     def run(self):
@@ -125,7 +126,8 @@ class Niubility:
         for epoch in range(self.args.num_epoch):
             train_loss, train_score = self._train(train_dataloader, criterion, optimizer)
             test_loss, test_score = self._test(test_dataloader, criterion)
-            if test_score > best_score or (test_score == best_score and test_loss > best_loss):
+            
+            if test_score > best_score or (test_score == best_score and test_loss < best_loss):
                 best_score, best_loss = test_score, test_loss
                 submit = self._submit(submit_dataloader)
             self.logger.info(

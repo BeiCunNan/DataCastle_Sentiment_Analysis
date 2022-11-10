@@ -14,7 +14,7 @@ def get_config():
 
     parser.add_argument('--num_classes', type=int, default=2)
     parser.add_argument('--model_name', type=str, default='bert',
-                        choices=['bert', 'roberta'])
+                        choices=['bert', 'roberta', 'senti-large'])
     parser.add_argument('--method_name', type=str, default='lstm',
                         choices=['gru', 'rnn', 'bilstm', 'textcnn', 'lstm', 'fnn'])
 
@@ -36,7 +36,7 @@ def get_config():
 
     '''logger'''
     args.log_name = '{}_{}_{}.log'.format(args.model_name, args.method_name,
-                                             datetime.now().strftime('%Y-%m-%d_%H-%M-%S')[2:])
+                                          datetime.now().strftime('%Y-%m-%d_%H-%M-%S')[2:])
     if not os.path.exists('logs'):
         os.mkdir('logs')
     logger = logging.getLogger()
