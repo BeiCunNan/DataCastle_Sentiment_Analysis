@@ -23,6 +23,10 @@ class Niubility:
         elif args.model_name == 'roberta':
             self.tokenizer = AutoTokenizer.from_pretrained('roberta-base', add_prefix_space=True)
             self.base_model = AutoModel.from_pretrained('roberta-base')
+        elif args.model_name == 'sentiWSP-large':
+            self.tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+            self.tokenizer.hidden_size = 1024
+            self.base_model = AutoModel.from_pretrained("shuaifan/SentiWSP")
         else:
             raise ValueError('unknown model')
         # Operate the method
@@ -106,7 +110,6 @@ class Niubility:
                 predicts = self.Mymodel(inputs)
                 predicts = torch.argmax(predicts, dim=1)
                 submit += predicts.cpu().tolist()
-        print(len(submit))
         return submit
 
     def run(self):
@@ -126,10 +129,10 @@ class Niubility:
         for epoch in range(self.args.num_epoch):
             train_loss, train_score = self._train(train_dataloader, criterion, optimizer)
             test_loss, test_score = self._test(test_dataloader, criterion)
-            
-            if test_score > best_score or (test_score == best_score and test_loss < best_loss):
-                best_score, best_loss = test_score, test_loss
-                submit = self._submit(submit_dataloader)
+            if (epoch > 20):
+                if test_score > best_score or (test_score == best_score and test_loss < best_loss):
+                    best_score, best_loss = test_score, test_loss
+                    submit = self._submit(submit_dataloader)
             self.logger.info(
                 '{}/{} - {:.2f}%'.format(epoch + 1, self.args.num_epoch, 100 * (epoch + 1) / self.args.num_epoch))
             self.logger.info('[train] loss: {:.4f}, f1_score: {:.2f}'.format(train_loss, train_score * 100))
