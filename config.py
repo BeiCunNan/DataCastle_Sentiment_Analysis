@@ -15,8 +15,8 @@ def get_config():
     parser.add_argument('--num_classes', type=int, default=2)
     parser.add_argument('--model_name', type=str, default='sentiWSP-large',
                         choices=['bert', 'roberta', 'sentiWSP-large'])
-    parser.add_argument('--method_name', type=str, default='lstm',
-                        choices=['gru', 'rnn', 'bilstm', 'textcnn', 'lstm', 'fnn'])
+    parser.add_argument('--method_name', type=str, default='wsp-lstm',
+                        choices=['gru', 'rnn', 'bilstm', 'textcnn', 'lstm', 'fnn','wsp-lstm'])
 
     '''Optimization'''
     parser.add_argument('--train_batch_size', type=int, default=4)

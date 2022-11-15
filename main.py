@@ -7,7 +7,7 @@ from transformers import logging, AutoTokenizer, AutoModel
 
 from config import get_config
 from data import load_dataset
-from model import Transformer, Gru_Model, BiLstm_Model, Lstm_Model, Rnn_Model
+from model import Transformer, Gru_Model, BiLstm_Model, Lstm_Model, Rnn_Model, Transformer_Extend_LSTM
 from sklearn.metrics import f1_score
 
 
@@ -25,7 +25,6 @@ class Niubility:
             self.base_model = AutoModel.from_pretrained('roberta-base')
         elif args.model_name == 'sentiWSP-large':
             self.tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
-            self.tokenizer.hidden_size = 1024
             self.base_model = AutoModel.from_pretrained("shuaifan/SentiWSP")
         else:
             raise ValueError('unknown model')
@@ -40,6 +39,8 @@ class Niubility:
             self.Mymodel = BiLstm_Model(self.base_model, args.num_classes)
         elif args.method_name == 'rnn':
             self.Mymodel = Rnn_Model(self.base_model, args.num_classes)
+        elif args.method_name == 'wsp-lstm':
+            self.Mymodel = Transformer_Extend_LSTM(self.base_model, args.num_classes)
         else:
             raise ValueError('unknown method')
 
