@@ -1,5 +1,3 @@
-import os
-
 import torch
 import torch.nn as nn
 from tqdm import tqdm
@@ -23,9 +21,9 @@ class Niubility:
         elif args.model_name == 'roberta':
             self.tokenizer = AutoTokenizer.from_pretrained('roberta-base', add_prefix_space=True)
             self.base_model = AutoModel.from_pretrained('roberta-base')
-        elif args.model_name == 'sentiWSP-large':
+        elif args.model_name == 'sentiWSP-base':
             self.tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
-            self.base_model = AutoModel.from_pretrained("shuaifan/SentiWSP")
+            self.base_model = AutoModel.from_pretrained("shuaifan/SentiWSP-base")
         else:
             raise ValueError('unknown model')
         # Operate the method

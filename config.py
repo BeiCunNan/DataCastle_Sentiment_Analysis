@@ -13,8 +13,8 @@ def get_config():
     '''Base'''
 
     parser.add_argument('--num_classes', type=int, default=2)
-    parser.add_argument('--model_name', type=str, default='sentiWSP-large',
-                        choices=['bert', 'roberta', 'sentiWSP-large'])
+    parser.add_argument('--model_name', type=str, default='sentiWSP-base',
+                        choices=['bert', 'roberta', 'sentiWSP-base'])
     parser.add_argument('--method_name', type=str, default='wsp-lstm',
                         choices=['gru', 'rnn', 'bilstm', 'textcnn', 'lstm', 'fnn','wsp-lstm'])
 
