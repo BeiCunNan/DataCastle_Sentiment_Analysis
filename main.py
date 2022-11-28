@@ -5,7 +5,8 @@ from transformers import logging, AutoTokenizer, AutoModel
 
 from config import get_config
 from data import load_dataset
-from model import Transformer, Gru_Model, BiLstm_Model, Lstm_Model, Rnn_Model, Transformer_Extend_LSTM
+from model import Transformer, Gru_Model, BiLstm_Model, Lstm_Model, Rnn_Model, Transformer_Extend_LSTM, \
+    Transformer_Text_Last_Hidden
 from sklearn.metrics import f1_score
 
 
@@ -39,6 +40,8 @@ class Niubility:
             self.Mymodel = Rnn_Model(self.base_model, args.num_classes)
         elif args.method_name == 'wsp-lstm':
             self.Mymodel = Transformer_Extend_LSTM(self.base_model, args.num_classes)
+        elif args.method_name == 'textcnn':
+            self.Mymodel = Transformer_Text_Last_Hidden(self.base_model, args.num_classes)
         else:
             raise ValueError('unknown method')
 

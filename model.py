@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-
+import torch.nn.functional as F
 
 # Bert + FNN
 class Transformer(nn.Module):
@@ -161,3 +161,44 @@ class Rnn_Model(nn.Module):
         outputs = outputs[:, -1, :]
         outputs = self.fc(outputs)
         return outputs
+
+class Transformer_Text_Last_Hidden(nn.Module):
+    def __init__(self, base_model, num_classes):
+        super().__init__()
+        self.base_model = base_model
+        self.num_classes = num_classes
+        for param in base_model.parameters():
+            param.requires_grad = (True)
+
+        # Define the hyperparameters
+        self.filter_sizes = [2, 3, 4]
+        self.num_filters = 2
+        self.encode_layer = 12
+
+        # TextCNN
+        self.convs = nn.ModuleList(
+            [nn.Conv2d(in_channels=1, out_channels=self.num_filters,
+                       kernel_size=(K, self.base_model.config.hidden_size)) for K in self.filter_sizes]
+        )
+        self.block = nn.Sequential(
+            nn.Dropout(0.5),
+            nn.Linear(self.num_filters * len(self.filter_sizes), self.num_classes),
+            nn.Softmax(dim=1)
+        )
+
+    def conv_pool(self, tokens, conv):
+        # x -> [batch,1,text_length,768]
+        tokens = conv(tokens)  # shape [batch_size, out_channels, x.shape[2] - conv.kernel_size[0] + 1, 1]
+        tokens = F.relu(tokens)
+        tokens = tokens.squeeze(3)  # shape [batch_size, out_channels, x.shape[2] - conv.kernel_size[0] + 1]
+        tokens = F.max_pool1d(tokens, tokens.size(2))  # shape[batch, out_channels, 1]
+        out = tokens.squeeze(2)  # shape[batch, out_channels]
+        return out
+
+    def forward(self, inputs):
+        raw_outputs = self.base_model(**inputs)
+        tokens = raw_outputs.last_hidden_state.unsqueeze(1)  # shape [batch_size, 1, max_len, hidden_size]
+        out = torch.cat([self.conv_pool(tokens, conv) for conv in self.convs],
+                        1)  # shape  [batch_size, self.num_filters * len(self.filter_sizes]
+        predicts = self.block(out)
+        return predicts
