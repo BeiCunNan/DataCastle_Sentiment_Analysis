@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from matplotlib import pyplot as plt
 from tqdm import tqdm
 from transformers import logging, AutoTokenizer, AutoModel
 
@@ -128,9 +129,11 @@ class Niubility:
         # Get the best_loss, the best_score and save the model
         submit = []
         best_loss, best_score = 0, 0
+        l_acc, l_epo = [], []
         for epoch in range(self.args.num_epoch):
             train_loss, train_score = self._train(train_dataloader, criterion, optimizer)
             test_loss, test_score = self._test(test_dataloader, criterion)
+            l_epo.append(epoch), l_acc.append(test_score)
             if (epoch > 20):
                 if test_score > best_score or (test_score == best_score and test_loss < best_loss):
                     best_score, best_loss = test_score, test_loss
@@ -150,6 +153,11 @@ class Niubility:
                 f.write(str(index) + ',' + str(line) + '\n')
                 index += 1
         print("----------Congratulations!----------")
+        plt.plot(l_epo, l_acc)
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.savefig('image.png')
+        plt.show()
 
 
 if __name__ == '__main__':
